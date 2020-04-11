@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -20,6 +21,7 @@ func GraboTweet(w http.ResponseWriter, r *http.Request) {
 		Fecha:   time.Now(),
 	}
 
+	log.Fatal(mensaje.Mensaje)
 	_, status, err := bd.InsertoTweet(registro)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar insertar el registro, reintente nuevamente"+err.Error(), 400)
