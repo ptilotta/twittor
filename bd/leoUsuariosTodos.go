@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/ptilotta/twittor/models"
@@ -31,7 +30,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 
 	cur, err := col.Find(ctx, query, findOptions)
 	if err != nil {
-		fmt.Println(err.Error())
 		return results, false
 	}
 
@@ -41,7 +39,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		var s models.Usuario
 		err := cur.Decode(&s)
 		if err != nil {
-			fmt.Println(err.Error())
 			return results, false
 		}
 
@@ -77,7 +74,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 
 	err = cur.Err()
 	if err != nil {
-		fmt.Println(err.Error())
 		return results, false
 	}
 	cur.Close(ctx)

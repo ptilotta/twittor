@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/ptilotta/twittor/models"
@@ -30,7 +29,6 @@ func LeoTweets(ID string, pagina int64) ([]*models.DevuelvoTweets, bool) {
 
 	cursor, err := col.Find(ctx, condicion, opciones)
 	if err != nil {
-		log.Fatal(err.Error())
 		return resultados, false
 	}
 
