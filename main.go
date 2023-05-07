@@ -56,9 +56,8 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	// Chequeo Conexión a la BD o Conecto la BD
 
-	if !bd.BaseConectada() {
-		bd.ConectarBD(awsgo.Ctx)
-	}
+	bd.ConectarBD(awsgo.Ctx)
+
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
 
 	if len(respAPI.CustomResp.Body) == 0 {
