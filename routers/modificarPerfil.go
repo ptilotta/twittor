@@ -9,25 +9,31 @@ import (
 )
 
 /*ModificarPerfil modifica el perfil de usuario */
-func ModificarPerfil(ctx context.Context, claim models.Claim) (int, string) {
+func ModificarPerfil(ctx context.Context, claim models.Claim) models.RespApi {
 
+	var r models.RespApi
 	var t models.Usuario
 
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 	if err != nil {
-		return 400, "Datos Incorrectos " + err.Error()
+		r.Message = "Datos Incorrectos " + err.Error()
+		return r
 	}
 
 	var status bool
 
 	status, err = bd.ModificoRegistro(t, claim.ID.Hex())
 	if err != nil {
-		return 400, "Ocurrión un error al intentar modificar el registro. Reintente nuevamente " + err.Error()
+		r.Message = "Ocurrión un error al intentar modificar el registro. Reintente nuevamente " + err.Error()
+		return r
 	}
 
 	if !status {
-		return 400, "No se ha logrado modificar el registro del usuario "
+		r.Message = "No se ha logrado modificar el registro del usuario "
+		return r
 	}
 
-	return 200, "Modificar Perfil OK !"
+	r.Status = 200
+	r.Message = "Modificar Perfil OK !"
+	return r
 }

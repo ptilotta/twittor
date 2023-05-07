@@ -3,34 +3,42 @@ package routers
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+	"time"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/jwt"
 	"github.com/ptilotta/twittor/models"
 )
 
 /*Login realiza el login */
-func Login(ctx context.Context) (int, string) {
+func Login(ctx context.Context) models.RespApi {
 
 	var t models.Usuario
+	var r models.RespApi
 
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 
 	if err != nil {
-		return 400, "Usuario y/o Contraseña inválidos " + err.Error()
+		r.Message = "Usuario y/o Contraseña inválidos " + err.Error()
+		return r
 	}
 	if len(t.Email) == 0 {
-		return 400, "El email del usuario es requerido"
+		r.Message = "El email del usuario es requerido"
+		return r
 	}
 
 	userData, existe := bd.IntentoLogin(t.Email, t.Password)
 	if !existe {
-		return 400, "Usuario y/o Contraseña inválidos "
+		r.Message = "Usuario y/o Contraseña inválidos "
+		return r
 	}
 
 	jwtKey, err := jwt.GeneroJWT(ctx, userData)
 	if err != nil {
-		return 400, "Ocurrió un error al intentar general el Token correspondiente " + err.Error()
+		r.Message = "Ocurrió un error al intentar general el Token correspondiente " + err.Error()
+		return r
 	}
 
 	resp := models.RespuestaLogin{
@@ -39,7 +47,30 @@ func Login(ctx context.Context) (int, string) {
 
 	token, err2 := json.Marshal(resp)
 	if err2 != nil {
-		return 400, "Error al intentar formatear la respuesta a JSON"
+		r.Message = "Error al intentar formatear la respuesta a JSON"
+		return r
 	}
-	return 200, string(token)
+
+	cookie := &http.Cookie{
+		Name:    "token",
+		Value:   jwtKey,
+		Expires: time.Now().Add(24 * time.Hour),
+	}
+	cookieString := cookie.String()
+
+	res := &events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Body:       string(token),
+		Headers: map[string]string{
+			"Content-Type":                "application/json",
+			"Access-Control-Allow-Origin": "*",
+			"Set-Cookie":                  cookieString,
+		},
+	}
+
+	r.Status = 200
+	r.Message = string(token)
+	r.CustomResp = res
+
+	return r
 }

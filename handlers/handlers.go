@@ -10,19 +10,17 @@ import (
 )
 
 /*Manejadores seteo mi puerto, el Handler y pongo a escuchar al Servidor */
-func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) (int, string) {
+func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
 
-	/*	router.HandleFunc("/subirAvatar", middlew.ChequeoBD(middlew.ValidoJWT(routers.SubirAvatar))).Methods("POST")
-		router.HandleFunc("/obtenerAvatar", middlew.ChequeoBD(routers.ObtenerAvatar)).Methods("GET")
-		router.HandleFunc("/subirBanner", middlew.ChequeoBD(middlew.ValidoJWT(routers.SubirBanner))).Methods("POST")
-		router.HandleFunc("/obtenerBanner", middlew.ChequeoBD(routers.ObtenerBanner)).Methods("GET")
-	*/
-	//================================================================================================
 	fmt.Println("Voy a procesar " + ctx.Value("path").(string) + " > " + ctx.Value("method").(string))
+
+	var r models.RespApi
 
 	isOk, statusCode, msg, claim := validoAuthorization(ctx)
 	if !isOk {
-		return statusCode, msg
+		r.Status = statusCode
+		r.Message = msg
+		return r
 	}
 
 	switch ctx.Value("method").(string) {
@@ -36,6 +34,10 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) (i
 			return routers.GraboTweet(ctx)
 		case "altaRelacion":
 			return routers.AltaRelacion(ctx, request, claim)
+		case "subirAvatar":
+			return routers.UploadImage(ctx, "A", request, claim)
+		case "subirBanner":
+			return routers.UploadImage(ctx, "B", request, claim)
 		}
 	case "GET":
 		switch ctx.Value("path").(string) {
@@ -49,6 +51,10 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) (i
 			return routers.ListaUsuarios(ctx, request, claim)
 		case "leoTweetsSeguidores":
 			return routers.LeoTweetsSeguidores(ctx, request, claim)
+		case "obtenerAvatar":
+			return routers.ObtenerImagen(ctx, "A", request, claim)
+		case "obtenerBanner":
+			return routers.ObtenerImagen(ctx, "B", request, claim)
 		}
 	case "PUT":
 		switch ctx.Value("path").(string) {
@@ -64,8 +70,9 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) (i
 		}
 	}
 
-	return 400, "Method Invalid"
-
+	r.Status = 400
+	r.Message = "Method Invalid"
+	return r
 }
 
 func validoAuthorization(ctx context.Context) (bool, int, string, models.Claim) {

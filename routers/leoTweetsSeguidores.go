@@ -10,7 +10,9 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func LeoTweetsSeguidores(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func LeoTweetsSeguidores(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	pagina := request.QueryStringParameters["pagina"]
 	if len(pagina) < 1 {
@@ -19,18 +21,24 @@ func LeoTweetsSeguidores(ctx context.Context, request events.APIGatewayV2HTTPReq
 
 	pag, err := strconv.Atoi(pagina)
 	if err != nil {
-		return 400, "Debe enviar el parámetro página con un valor mayor a 0"
+		r.Message = "Debe enviar el parámetro página con un valor mayor a 0"
+		return r
 	}
 
 	tweets, correcto := bd.LeoTweetsSeguidores(IDUsuario, pag)
 	if !correcto {
-		return 400, "Error al leer los tweets"
+		r.Message = "Error al leer los tweets"
+		return r
 	}
 
 	respJson, err := json.Marshal(tweets)
 	if err != nil {
-		return 500, "Error al formatear los datos de los usuarios como JSON"
+		r.Status = 500
+		r.Message = "Error al formatear los datos de los usuarios como JSON"
+		return r
 	}
 
-	return 200, string(respJson)
+	r.Status = 200
+	r.Message = string(respJson)
+	return r
 }

@@ -7,15 +7,19 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
+	"github.com/ptilotta/twittor/models"
 )
 
-func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) (int, string) {
+func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
+
+	var r models.RespApi
 
 	ID := request.QueryStringParameters["id"]
 	pagina := request.QueryStringParameters["pagina"]
 
 	if len(ID) < 1 {
-		return 400, "El parámetro ID es obligatorio"
+		r.Message = "El parámetro ID es obligatorio"
+		return r
 	}
 
 	if len(pagina) < 1 {
@@ -24,18 +28,24 @@ func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) (int
 
 	pag, err := strconv.Atoi(pagina)
 	if err != nil {
-		return 400, "Debe enviar el parámetro página con un valor mayor a 0"
+		r.Message = "Debe enviar el parámetro página con un valor mayor a 0"
+		return r
 	}
 
 	tweets, correcto := bd.LeoTweets(ID, int64(pag))
 	if !correcto {
-		return 400, "Error al leer los tweets"
+		r.Message = "Error al leer los tweets"
+		return r
 	}
 
 	respJson, err := json.Marshal(tweets)
 	if err != nil {
-		return 500, "Error al formatear los datos de los usuarios como JSON"
+		r.Status = 500
+		r.Message = "Error al formatear los datos de los usuarios como JSON"
+		return r
 	}
 
-	return 200, string(respJson)
+	r.Status = 200
+	r.Message = string(respJson)
+	return r
 }

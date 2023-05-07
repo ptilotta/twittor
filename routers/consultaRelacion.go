@@ -9,11 +9,14 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func ConsultaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func ConsultaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		return 400, "El parámetro ID es obligatorio"
+		r.Message = "El parámetro ID es obligatorio"
+		return r
 	}
 
 	var t models.Relacion
@@ -31,8 +34,12 @@ func ConsultaRelacion(ctx context.Context, request events.APIGatewayV2HTTPReques
 
 	respJson, err := json.Marshal(status)
 	if err != nil {
-		return 500, "Error al formatear los datos de los usuarios como JSON"
+		r.Status = 500
+		r.Message = "Error al formatear los datos de los usuarios como JSON"
+		return r
 	}
 
-	return 200, string(respJson)
+	r.Status = 200
+	r.Message = string(respJson)
+	return r
 }

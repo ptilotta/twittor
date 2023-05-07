@@ -9,12 +9,14 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-/*GraboTweet permite grabar el tweet en la base de datos */
-func GraboTweet(ctx context.Context) (int, string) {
+func GraboTweet(ctx context.Context) models.RespApi {
 	var mensaje models.Tweet
+	var r models.RespApi
+
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &mensaje)
 	if err != nil {
-		return 400, "Ocurrió un error al intentar decodificar el body " + err.Error()
+		r.Message = "Ocurrió un error al intentar decodificar el body " + err.Error()
+		return r
 	}
 
 	registro := models.GraboTweet{
@@ -25,12 +27,16 @@ func GraboTweet(ctx context.Context) (int, string) {
 
 	_, status, err := bd.InsertoTweet(registro)
 	if err != nil {
-		return 400, "Ocurrió un error al intentar insertar el registro, reintente nuevamente" + err.Error()
+		r.Message = "Ocurrió un error al intentar insertar el registro, reintente nuevamente" + err.Error()
+		return r
 	}
 
 	if !status {
-		return 400, "No se ha logrado insertar el Tweet"
+		r.Message = "No se ha logrado insertar el Tweet"
+		return r
 	}
 
-	return 200, "Tweet creado correctamente"
+	r.Status = 200
+	r.Message = "Tweet creado correctamente"
+	return r
 }

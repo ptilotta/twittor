@@ -8,17 +8,23 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func EliminarTweet(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func EliminarTweet(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		return 400, "El parámetro ID es obligatorio"
+		r.Message = "El parámetro ID es obligatorio"
+		return r
 	}
 
 	err := bd.BorroTweet(ID, claim.ID.Hex())
 	if err != nil {
-		return 400, "Ocurrió un error al intentar borrar el tweet " + err.Error()
+		r.Message = "Ocurrió un error al intentar borrar el tweet " + err.Error()
+		return r
 	}
 
-	return 200, "Eliminar Tweet OK !"
+	r.Status = 200
+	r.Message = "Eliminar Tweet OK !"
+	return r
 }

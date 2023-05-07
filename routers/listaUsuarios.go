@@ -10,7 +10,9 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func ListaUsuarios(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func ListaUsuarios(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	page := request.QueryStringParameters["pagina"]
 	typeUser := request.QueryStringParameters["type"]
@@ -21,18 +23,24 @@ func ListaUsuarios(ctx context.Context, request events.APIGatewayV2HTTPRequest, 
 	}
 	pagTemp, err := strconv.Atoi(page)
 	if err != nil {
-		return 400, "Debe enviar el parámetro página como entero mayor a 0"
+		r.Message = "Debe enviar el parámetro página como entero mayor a 0"
+		return r
 	}
 
 	usuarios, status := bd.LeoUsuariosTodos(IDUsuario, int64(pagTemp), search, typeUser)
 	if !status {
-		return 400, "Error al leer los usuarios"
+		r.Message = "Error al leer los usuarios"
+		return r
 	}
 
 	respJson, err := json.Marshal(usuarios)
 	if err != nil {
-		return 500, "Error al formatear los datos de los usuarios como JSON"
+		r.Status = 500
+		r.Message = "Error al formatear los datos de los usuarios como JSON"
+		return r
 	}
 
-	return 200, string(respJson)
+	r.Status = 200
+	r.Message = string(respJson)
+	return r
 }

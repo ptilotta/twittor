@@ -8,11 +8,14 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func AltaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func AltaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		return 400, "El parámetro ID es obligatorio"
+		r.Message = "El parámetro ID es obligatorio"
+		return r
 	}
 
 	var t models.Relacion
@@ -21,10 +24,15 @@ func AltaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, c
 
 	status, err := bd.InsertoRelacion(t)
 	if err != nil {
-		return 400, "Ocurrió un error al intentar insertar relación " + err.Error()
+		r.Message = "Ocurrió un error al intentar insertar relación " + err.Error()
+		return r
 	}
 	if !status {
-		return 400, "No se ha logrado insertar la relación " + err.Error()
+		r.Message = "No se ha logrado insertar la relación " + err.Error()
+		return r
 	}
-	return 200, "Alta Relación OK"
+
+	r.Status = 200
+	r.Message = "Alta Relación OK"
+	return r
 }

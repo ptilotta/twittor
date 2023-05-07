@@ -8,11 +8,14 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func BajaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+func BajaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+
+	var r models.RespApi
 
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		return 400, "El parámetro ID es obligatorio"
+		r.Message = "El parámetro ID es obligatorio"
+		return r
 	}
 
 	var t models.Relacion
@@ -21,11 +24,15 @@ func BajaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, c
 
 	status, err := bd.BorroRelacion(t)
 	if err != nil {
-		return 400, "Ocurrió un error al intentar borrar relación " + err.Error()
+		r.Message = "Ocurrió un error al intentar borrar relación " + err.Error()
+		return r
 	}
 	if !status {
-		return 400, "No se ha logrado borrar la relación " + err.Error()
+		r.Message = "No se ha logrado borrar la relación " + err.Error()
+		return r
 	}
 
-	return 200, "Baja Relación OK!"
+	r.Status = 200
+	r.Message = "Baja Relación OK!"
+	return r
 }
