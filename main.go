@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -60,6 +61,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
 
+	fmt.Println("Sali de Manejadores")
 	if len(respAPI.CustomResp.Body) == 0 {
 		res = &events.APIGatewayProxyResponse{
 			StatusCode: respAPI.Status,
@@ -71,6 +73,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 		respAPI.CustomResp = res
 	}
 
+	fmt.Println("voy al último RETURN")
 	return respAPI.CustomResp, nil
 }
 

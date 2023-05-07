@@ -3,6 +3,7 @@ package routers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
@@ -48,5 +49,6 @@ func Registro(ctx context.Context) models.RespApi {
 
 	r.Status = 200
 	r.Message = "Registro OK"
+	fmt.Println(r.Message)
 	return r
 }
