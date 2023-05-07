@@ -3,7 +3,6 @@ package bd
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -14,6 +13,7 @@ var MongoCN *mongo.Client
 
 func ConectarBD(ctx context.Context) error {
 	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", ctx.Value("user").(string), ctx.Value("password").(string), ctx.Value("host").(string))
+	fmt.Println(connStr)
 	var clientOptions = options.Client().ApplyURI(connStr)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
@@ -25,7 +25,7 @@ func ConectarBD(ctx context.Context) error {
 		fmt.Println(err.Error())
 		return err
 	}
-	log.Println("Conexión Exitosa con la BD")
+	fmt.Println("Conexión Exitosa con la BD")
 	MongoCN = client
 	return nil
 }
