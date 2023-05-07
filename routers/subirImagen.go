@@ -75,7 +75,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	var status bool
 
 	status, err = bd.ModificoRegistro(usuario, IDUsuario)
-	if err != nil || status == false {
+	if err != nil || !status {
 		r.Message = "Error al grabar el avatar en la BD ! " + err.Error()
 		return r
 	}
