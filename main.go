@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	lambda "github.com/aws/aws-lambda-go/lambda"
@@ -41,7 +42,9 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 		return res, nil
 	}
 
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "path", request.RawPath)
+	path := strings.Replace(request.RawPath, os.Getenv("UrlPrefix"), "", -1)
+
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, "path", path)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, "method", request.RequestContext.HTTP.Method)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, "user", SecretModel.Username)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, "password", SecretModel.Password)
@@ -82,6 +85,10 @@ func ValidoParametros() bool {
 		return traeParametro
 	}
 	_, traeParametro = os.LookupEnv("BucketName")
+	if !traeParametro {
+		return traeParametro
+	}
+	_, traeParametro = os.LookupEnv("UrlPrefix")
 	if !traeParametro {
 		return traeParametro
 	}
