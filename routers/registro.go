@@ -16,36 +16,41 @@ func Registro(ctx context.Context) models.RespApi {
 	var r models.RespApi
 
 	fmt.Println("Entré a Registro")
-	fmt.Println(ctx)
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 	if err != nil {
 		r.Message = err.Error()
+		fmt.Println(r.Message)
 		return r
 	}
 
 	if len(t.Email) == 0 {
 		r.Message = "El email de usuario es requerido"
+		fmt.Println(r.Message)
 		return r
 	}
 	if len(t.Password) < 6 {
 		r.Message = "Debe especificar una contraseña de al menos 6 caracteres"
+		fmt.Println(r.Message)
 		return r
 	}
 
 	_, encontrado, _ := bd.ChequeoYaExisteUsuario(t.Email)
 	if encontrado {
 		r.Message = "Ya existe un usuario registrado con ese email"
+		fmt.Println(r.Message)
 		return r
 	}
 
 	_, status, err := bd.InsertoRegistro(t)
 	if err != nil {
 		r.Message = "Ocurrió un error al intentar realizar el registro de usuario " + err.Error()
+		fmt.Println(r.Message)
 		return r
 	}
 
 	if !status {
 		r.Message = "No se ha logrado insertar el registro del usuario"
+		fmt.Println(r.Message)
 		return r
 	}
 
