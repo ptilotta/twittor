@@ -60,6 +60,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 	bd.ConectarBD(awsgo.Ctx)
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
+	fmt.Println(respAPI)
 
 	fmt.Println("Sali de Manejadores")
 	if len(respAPI.CustomResp.Body) == 0 {
