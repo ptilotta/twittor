@@ -1,33 +1,30 @@
 package routers
 
 import (
-	"net/http"
+	"context"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
-/*AltaRelacion realiza el registro de la relacion entre usuarios */
-func AltaRelacion(w http.ResponseWriter, r *http.Request) {
+func AltaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
 
-	ID := r.URL.Query().Get("id")
+	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		http.Error(w, "El parámetro ID es obligatorio", http.StatusBadRequest)
-		return
+		return 400, "El parámetro ID es obligatorio"
 	}
 
 	var t models.Relacion
-	t.UsuarioID = IDUsuario
+	t.UsuarioID = claim.ID.Hex()
 	t.UsuarioRelacionID = ID
 
 	status, err := bd.InsertoRelacion(t)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar insertar relación "+err.Error(), http.StatusBadRequest)
-		return
+		return 400, "Ocurrió un error al intentar insertar relación " + err.Error()
 	}
-	if status == false {
-		http.Error(w, "No se ha logrado insertar la relación "+err.Error(), http.StatusBadRequest)
-		return
+	if !status {
+		return 400, "No se ha logrado insertar la relación " + err.Error()
 	}
-	w.WriteHeader(http.StatusCreated)
+	return 200, "Alta Relación OK"
 }

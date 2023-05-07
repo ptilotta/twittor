@@ -1,16 +1,18 @@
 package jwt
 
 import (
+	"context"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/ptilotta/twittor/models"
 )
 
 /*GeneroJWT genera el encriptado con JWT */
-func GeneroJWT(t models.Usuario) (string, error) {
+func GeneroJWT(ctx context.Context, t models.Usuario) (string, error) {
 
-	miClave := []byte("MastersdelDesarrollo_grupodeFacebook")
+	//miClave := []byte("MastersdelDesarrollo_grupodeFacebook")
+	miClave := []byte(ctx.Value("jwtSign").(string))
 
 	payload := jwt.MapClaims{
 		"email":            t.Email,

@@ -1,40 +1,41 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 	"strconv"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 )
 
-/*LeoTweets Leo los tweets */
-func LeoTweets(w http.ResponseWriter, r *http.Request) {
+func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) (int, string) {
 
-	ID := r.URL.Query().Get("id")
+	ID := request.QueryStringParameters["id"]
+	pagina := request.QueryStringParameters["pagina"]
+
 	if len(ID) < 1 {
-		http.Error(w, "Debe enviar el parámetro id", http.StatusBadRequest)
-		return
+		return 400, "El parámetro ID es obligatorio"
 	}
 
-	if len(r.URL.Query().Get("pagina")) < 1 {
-		http.Error(w, "Debe enviar el parámetro página", http.StatusBadRequest)
-		return
+	if len(pagina) < 1 {
+		pagina = "1"
 	}
-	pagina, err := strconv.Atoi(r.URL.Query().Get("pagina"))
+
+	pag, err := strconv.Atoi(pagina)
 	if err != nil {
-		http.Error(w, "Debe enviar el parámetro página con un valor mayor a 0", http.StatusBadRequest)
-		return
+		return 400, "Debe enviar el parámetro página con un valor mayor a 0"
 	}
 
-	pag := int64(pagina)
-	respuesta, correcto := bd.LeoTweets(ID, pag)
-	if correcto == false {
-		http.Error(w, "Error al leer los tweets", http.StatusBadRequest)
-		return
+	tweets, correcto := bd.LeoTweets(ID, int64(pag))
+	if !correcto {
+		return 400, "Error al leer los tweets"
 	}
 
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(respuesta)
+	respJson, err := json.Marshal(tweets)
+	if err != nil {
+		return 500, "Error al formatear los datos de los usuarios como JSON"
+	}
+
+	return 200, string(respJson)
 }

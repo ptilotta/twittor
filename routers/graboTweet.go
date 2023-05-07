@@ -1,8 +1,8 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 	"time"
 
 	"github.com/ptilotta/twittor/bd"
@@ -10,9 +10,12 @@ import (
 )
 
 /*GraboTweet permite grabar el tweet en la base de datos */
-func GraboTweet(w http.ResponseWriter, r *http.Request) {
+func GraboTweet(ctx context.Context) (int, string) {
 	var mensaje models.Tweet
-	err := json.NewDecoder(r.Body).Decode(&mensaje)
+	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &mensaje)
+	if err != nil {
+		return 400, "Ocurrió un error al intentar decodificar el body " + err.Error()
+	}
 
 	registro := models.GraboTweet{
 		UserID:  IDUsuario,
@@ -22,15 +25,12 @@ func GraboTweet(w http.ResponseWriter, r *http.Request) {
 
 	_, status, err := bd.InsertoTweet(registro)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar insertar el registro, reintente nuevamente"+err.Error(), 400)
-		return
+		return 400, "Ocurrió un error al intentar insertar el registro, reintente nuevamente" + err.Error()
 	}
 
-	if status == false {
-		http.Error(w, "No se ha logrado insertar el Tweet", 400)
-		return
+	if !status {
+		return 400, "No se ha logrado insertar el Tweet"
 	}
 
-	w.WriteHeader(http.StatusCreated)
-
+	return 200, "Tweet creado correctamente"
 }

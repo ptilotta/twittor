@@ -1,27 +1,31 @@
 package routers
 
 import (
-	"net/http"
+	"context"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
-/*BajaRelacion realiza el borrado de la relacion entre usuarios */
-func BajaRelacion(w http.ResponseWriter, r *http.Request) {
-	ID := r.URL.Query().Get("id")
+func BajaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+
+	ID := request.QueryStringParameters["id"]
+	if len(ID) < 1 {
+		return 400, "El parámetro ID es obligatorio"
+	}
+
 	var t models.Relacion
-	t.UsuarioID = IDUsuario
+	t.UsuarioID = claim.ID.Hex()
 	t.UsuarioRelacionID = ID
 
 	status, err := bd.BorroRelacion(t)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar borrar relación "+err.Error(), http.StatusBadRequest)
-		return
+		return 400, "Ocurrió un error al intentar borrar relación " + err.Error()
 	}
-	if status == false {
-		http.Error(w, "No se ha logrado borrar la relación "+err.Error(), http.StatusBadRequest)
-		return
+	if !status {
+		return 400, "No se ha logrado borrar la relación " + err.Error()
 	}
-	w.WriteHeader(http.StatusCreated)
+
+	return 200, "Baja Relación OK!"
 }

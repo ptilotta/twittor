@@ -2,6 +2,7 @@ package bd
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/ptilotta/twittor/models"
@@ -21,8 +22,8 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 	var results []*models.Usuario
 
 	findOptions := options.Find()
-	findOptions.SetSkip((page - 1) * 20)
 	findOptions.SetLimit(20)
+	findOptions.SetSkip((page - 1) * 20)
 
 	query := bson.M{
 		"nombre": bson.M{"$regex": `(?i)` + search},
@@ -47,6 +48,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		r.UsuarioRelacionID = s.ID.Hex()
 
 		incluir = false
+		log.Println(tipo)
 
 		encontrado, err = ConsultoRelacion(r)
 		if tipo == "new" && encontrado == false {
@@ -67,7 +69,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 			s.Ubicacion = ""
 			s.Banner = ""
 			s.Email = ""
-
 			results = append(results, &s)
 		}
 	}

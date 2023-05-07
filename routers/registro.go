@@ -1,48 +1,42 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
 /*Registro es la funcion para crear en la BD el registro de usuario */
-func Registro(w http.ResponseWriter, r *http.Request) {
+func Registro(ctx context.Context) (int, string) {
 
 	var t models.Usuario
-	err := json.NewDecoder(r.Body).Decode(&t)
+	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 	if err != nil {
-		http.Error(w, "Error en los datos recibidos "+err.Error(), 400)
-		return
+		return 400, err.Error()
 	}
 
 	if len(t.Email) == 0 {
-		http.Error(w, "El email de usuario es requerido", 400)
-		return
+		return 400, "El email de usuario es requerido"
 	}
 	if len(t.Password) < 6 {
-		http.Error(w, "Debe especificar una contraseña de al menos 6 caracteres", 400)
-		return
+		return 400, "Debe especificar una contraseña de al menos 6 caracteres"
 	}
 
 	_, encontrado, _ := bd.ChequeoYaExisteUsuario(t.Email)
-	if encontrado == true {
-		http.Error(w, "Ya existe un usuario registrado con ese email", 400)
-		return
+	if encontrado {
+		return 400, "Ya existe un usuario registrado con ese email"
 	}
 
 	_, status, err := bd.InsertoRegistro(t)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar realizar el registro de usuario "+err.Error(), 400)
-		return
+		return 400, "Ocurrió un error al intentar realizar el registro de usuario " + err.Error()
 	}
 
-	if status == false {
-		http.Error(w, "No se ha logrado insertar el registro del usuario", 400)
-		return
+	if !status {
+		return 400, "No se ha logrado insertar el registro del usuario"
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	return 200, "Registro OK"
 }

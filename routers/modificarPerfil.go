@@ -1,37 +1,33 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
 /*ModificarPerfil modifica el perfil de usuario */
-func ModificarPerfil(w http.ResponseWriter, r *http.Request) {
+func ModificarPerfil(ctx context.Context, claim models.Claim) (int, string) {
 
 	var t models.Usuario
 
-	err := json.NewDecoder(r.Body).Decode(&t)
+	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 	if err != nil {
-		http.Error(w, "Datos Incorrectos "+err.Error(), 400)
-		return
+		return 400, "Datos Incorrectos " + err.Error()
 	}
 
 	var status bool
 
-	status, err = bd.ModificoRegistro(t, IDUsuario)
+	status, err = bd.ModificoRegistro(t, claim.ID.Hex())
 	if err != nil {
-		http.Error(w, "Ocurrión un error al intentar modificar el registro. Reintente nuevamente "+err.Error(), 400)
-		return
+		return 400, "Ocurrión un error al intentar modificar el registro. Reintente nuevamente " + err.Error()
 	}
 
-	if status == false {
-		http.Error(w, "No se ha logrado modificar el registro del usuario ", 400)
-		return
+	if !status {
+		return 400, "No se ha logrado modificar el registro del usuario "
 	}
 
-	w.WriteHeader(http.StatusCreated)
-
+	return 200, "Modificar Perfil OK !"
 }

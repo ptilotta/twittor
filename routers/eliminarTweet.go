@@ -1,25 +1,24 @@
 package routers
 
 import (
-	"net/http"
+	"context"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
+	"github.com/ptilotta/twittor/models"
 )
 
-/*EliminarTweet permite borrar un Tweet determinado */
-func EliminarTweet(w http.ResponseWriter, r *http.Request) {
-	ID := r.URL.Query().Get("id")
+func EliminarTweet(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
+
+	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		http.Error(w, "Debe enviar el parámetro ID", http.StatusBadRequest)
-		return
+		return 400, "El parámetro ID es obligatorio"
 	}
 
-	err := bd.BorroTweet(ID, IDUsuario)
+	err := bd.BorroTweet(ID, claim.ID.Hex())
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar borrar el tweet "+err.Error(), http.StatusBadRequest)
-		return
+		return 400, "Ocurrió un error al intentar borrar el tweet " + err.Error()
 	}
 
-	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	return 200, "Eliminar Tweet OK !"
 }

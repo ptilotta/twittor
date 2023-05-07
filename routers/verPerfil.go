@@ -1,28 +1,29 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 )
 
-/*VerPerfil permite extraer los valores del Perfil */
-func VerPerfil(w http.ResponseWriter, r *http.Request) {
+func VerPerfil(ctx context.Context, request events.APIGatewayV2HTTPRequest) (int, string) {
 
-	ID := r.URL.Query().Get("id")
+	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
-		http.Error(w, "Debe enviar el parámetro ID", http.StatusBadRequest)
-		return
+		return 400, "El parámetro ID es obligatorio"
 	}
 
 	perfil, err := bd.BuscoPerfil(ID)
 	if err != nil {
-		http.Error(w, "Ocurrió un error al intentar buscar el registro "+err.Error(), 400)
-		return
+		return 400, "Ocurrió un error al intentar buscar el registro " + err.Error()
 	}
 
-	w.Header().Set("context-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(perfil)
+	respJson, err := json.Marshal(perfil)
+	if err != nil {
+		return 500, "Error al formatear los datos de los usuarios como JSON"
+	}
+
+	return 200, string(respJson)
 }

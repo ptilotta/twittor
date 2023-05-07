@@ -1,33 +1,36 @@
 package routers
 
 import (
+	"context"
 	"encoding/json"
-	"net/http"
 	"strconv"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
+	"github.com/ptilotta/twittor/models"
 )
 
-/*LeoTweetsSeguidores lee los tweets de todos nuestros seguidores */
-func LeoTweetsSeguidores(w http.ResponseWriter, r *http.Request) {
+func LeoTweetsSeguidores(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) (int, string) {
 
-	if len(r.URL.Query().Get("pagina")) < 1 {
-		http.Error(w, "Debe enviar el parámetro página", http.StatusBadRequest)
-		return
+	pagina := request.QueryStringParameters["pagina"]
+	if len(pagina) < 1 {
+		pagina = "1"
 	}
-	pagina, err := strconv.Atoi(r.URL.Query().Get("pagina"))
+
+	pag, err := strconv.Atoi(pagina)
 	if err != nil {
-		http.Error(w, "Debe enviar el parámetro página como entero mayor a 0", http.StatusBadRequest)
-		return
+		return 400, "Debe enviar el parámetro página con un valor mayor a 0"
 	}
 
-	respuesta, correcto := bd.LeoTweetsSeguidores(IDUsuario, pagina)
-	if correcto == false {
-		http.Error(w, "Error al leer los tweets", http.StatusBadRequest)
-		return
+	tweets, correcto := bd.LeoTweetsSeguidores(IDUsuario, pag)
+	if !correcto {
+		return 400, "Error al leer los tweets"
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(respuesta)
+	respJson, err := json.Marshal(tweets)
+	if err != nil {
+		return 500, "Error al formatear los datos de los usuarios como JSON"
+	}
+
+	return 200, string(respJson)
 }
