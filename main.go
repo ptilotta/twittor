@@ -60,10 +60,9 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 	bd.ConectarBD(awsgo.Ctx)
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
-	fmt.Println(respAPI)
 
 	fmt.Println("Sali de Manejadores")
-	if len(respAPI.CustomResp.Body) == 0 {
+	if respAPI.CustomResp == nil {
 		respAPI.CustomResp.Body = string(respAPI.Message)
 		respAPI.CustomResp.Headers = map[string]string{
 			"Content-Type": "application/json",
