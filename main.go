@@ -63,7 +63,6 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	fmt.Println("Sali de Manejadores")
 	if respAPI.CustomResp == nil {
-		var res *events.APIGatewayProxyResponse
 		headersResp := map[string]string{
 			"Content-Type": "application/json",
 		}
@@ -72,7 +71,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 			Body:       string(respAPI.Message),
 			Headers:    headersResp,
 		}
-		fmt.Println("Me fui por aca")
+		fmt.Println(res)
 		return res, nil
 	} else {
 		return respAPI.CustomResp, nil
