@@ -64,6 +64,8 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 	fmt.Println("==================================")
 	fmt.Println("Status")
 	fmt.Println(respAPI.Status)
+	fmt.Println("Message")
+	fmt.Println(respAPI.Message)
 	fmt.Println("==================================")
 	fmt.Println("Sali de Manejadores")
 	if respAPI.CustomResp == nil {
