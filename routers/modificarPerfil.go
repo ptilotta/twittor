@@ -12,6 +12,8 @@ import (
 func ModificarPerfil(ctx context.Context, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
+
 	var t models.Usuario
 
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)

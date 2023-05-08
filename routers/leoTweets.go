@@ -13,6 +13,7 @@ import (
 func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
 
 	ID := request.QueryStringParameters["id"]
 	pagina := request.QueryStringParameters["pagina"]

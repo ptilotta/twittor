@@ -12,6 +12,7 @@ import (
 func GraboTweet(ctx context.Context) models.RespApi {
 	var mensaje models.Tweet
 	var r models.RespApi
+	r.Status = 400
 
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &mensaje)
 	if err != nil {

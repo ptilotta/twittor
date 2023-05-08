@@ -39,6 +39,7 @@ en el bucket S3 creado hay que habilitar la política del bucket y colocar el si
 func UploadImage(ctx context.Context, uploadType string, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
 
 	decodedBody, err := base64.StdEncoding.DecodeString(ctx.Value("body").(string))
 	if err != nil {

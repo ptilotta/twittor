@@ -17,6 +17,7 @@ func Login(ctx context.Context) models.RespApi {
 
 	var t models.Usuario
 	var r models.RespApi
+	r.Status = 400
 
 	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
 

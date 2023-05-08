@@ -11,6 +11,7 @@ import (
 func AltaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
 
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {

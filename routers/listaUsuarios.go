@@ -13,6 +13,7 @@ import (
 func ListaUsuarios(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
 
 	page := request.QueryStringParameters["pagina"]
 	typeUser := request.QueryStringParameters["type"]

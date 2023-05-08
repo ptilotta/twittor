@@ -13,6 +13,7 @@ import (
 func LeoTweetsSeguidores(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
+	r.Status = 400
 
 	pagina := request.QueryStringParameters["pagina"]
 	if len(pagina) < 1 {
