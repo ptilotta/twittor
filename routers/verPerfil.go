@@ -3,6 +3,7 @@ package routers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
@@ -14,6 +15,7 @@ func VerPerfil(ctx context.Context, request events.APIGatewayV2HTTPRequest) mode
 	var r models.RespApi
 	r.Status = 400
 
+	fmt.Println("Entré en verPerfil")
 	ID := request.QueryStringParameters["id"]
 	if len(ID) < 1 {
 		r.Message = "El parámetro ID es obligatorio"

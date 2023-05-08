@@ -15,6 +15,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 	fmt.Println("Voy a procesar " + ctx.Value("path").(string) + " > " + ctx.Value("method").(string))
 
 	var r models.RespApi
+	r.Status = 400
 
 	isOk, statusCode, msg, claim := validoAuthorization(ctx)
 	if !isOk {
