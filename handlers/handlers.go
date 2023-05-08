@@ -17,7 +17,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 	var r models.RespApi
 	r.Status = 400
 
-	isOk, statusCode, msg, claim := validoAuthorization(ctx)
+	isOk, statusCode, msg, claim := validoAuthorization(ctx, request)
 	if !isOk {
 		r.Status = statusCode
 		r.Message = msg
@@ -76,15 +76,14 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 	return r
 }
 
-func validoAuthorization(ctx context.Context) (bool, int, string, models.Claim) {
+func validoAuthorization(ctx context.Context, request events.APIGatewayV2HTTPRequest) (bool, int, string, models.Claim) {
 
 	path := ctx.Value("path").(string)
 	if path == "registro" || path == "login" || path == "obtenerAvatar" || path == "obtenerBanner" {
 		return true, 200, "", models.Claim{}
 	}
 
-	head := ctx.Value("headers").(map[string]string)
-	token := head["authorization"]
+	token := request.Headers["authorization"]
 	if len(token) == 0 {
 		return false, 401, "Token requerido", models.Claim{}
 	}
