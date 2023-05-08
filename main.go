@@ -61,6 +61,10 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
 
+	fmt.Println("==================================")
+	fmt.Println("Status")
+	fmt.Println(respAPI.Status)
+	fmt.Println("==================================")
 	fmt.Println("Sali de Manejadores")
 	if respAPI.CustomResp == nil {
 		headersResp := map[string]string{
