@@ -71,6 +71,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 		response.Headers = map[string]string{
 			"Content-Type": "application/json",
 		}
+		fmt.Println(response)
 		return response, nil
 	} else {
 		return respAPI.CustomResp, nil
