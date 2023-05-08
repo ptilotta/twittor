@@ -72,6 +72,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 			Body:       string(respAPI.Message),
 			Headers:    headersResp,
 		}
+		fmt.Println("Me fui por aca")
 		return res, nil
 	} else {
 		return respAPI.CustomResp, nil
