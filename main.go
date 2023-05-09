@@ -58,6 +58,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	// Chequeo Conexión a la BD o Conecto la BD
 
+	fmt.Println(awsgo.Ctx)
 	bd.ConectarBD(awsgo.Ctx)
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
