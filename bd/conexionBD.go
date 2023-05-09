@@ -17,7 +17,10 @@ type key models.Key
 
 func ConectarBD(ctx context.Context) error {
 
-	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", ctx.Value("user").(key), ctx.Value("password").(key), ctx.Value("host").(key))
+	user := string(ctx.Value("user").(key))
+	passwd := string(ctx.Value("password").(key))
+	host := string(ctx.Value("host").(key))
+	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", user, passwd, host)
 	fmt.Println(connStr)
 	var clientOptions = options.Client().ApplyURI(connStr)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
