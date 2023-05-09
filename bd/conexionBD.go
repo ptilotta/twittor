@@ -16,10 +16,10 @@ var DatabaseName string
 func ConectarBD(ctx context.Context) error {
 
 	// sss
-	user := string(ctx.Value("user").(models.Key))
-	passwd := string(ctx.Value("password").(models.Key))
-	host := string(ctx.Value("host").(models.Key))
-	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", user, passwd, host)
+	user := ctx.Value("user").(models.Key)
+	passwd := ctx.Value("password").(models.Key)
+	host := ctx.Value("host").(models.Key)
+	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", string(user), string(passwd), string(host))
 	fmt.Println(connStr)
 	var clientOptions = options.Client().ApplyURI(connStr)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -34,7 +34,8 @@ func ConectarBD(ctx context.Context) error {
 	}
 	fmt.Println("Conexión Exitosa con la BD")
 	MongoCN = client
-	DatabaseName = string(ctx.Value("database").(models.Key))
+	db := ctx.Value("database").(models.Key)
+	DatabaseName = string(db)
 	return nil
 }
 
