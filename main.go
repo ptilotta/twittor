@@ -18,8 +18,6 @@ import (
 func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) (*events.APIGatewayProxyResponse, error) {
 
 	var res *events.APIGatewayProxyResponse
-	type key models.Key
-
 	awsgo.InicializoAWS()
 
 	if !ValidoParametros() {
@@ -47,15 +45,15 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	path := strings.Replace(request.RawPath, os.Getenv("UrlPrefix"), "", -1)
 
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("path"), path)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("method"), request.RequestContext.HTTP.Method)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("user"), SecretModel.Username)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("password"), SecretModel.Password)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("host"), SecretModel.Host)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("database"), SecretModel.Database)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("jwtSign"), SecretModel.JWTSign)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("body"), request.Body)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("bucketName"), os.Getenv("BucketName"))
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("path"), path)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("method"), request.RequestContext.HTTP.Method)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("user"), SecretModel.Username)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("password"), SecretModel.Password)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("host"), SecretModel.Host)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("database"), SecretModel.Database)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("jwtSign"), SecretModel.JWTSign)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("body"), request.Body)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("bucketName"), os.Getenv("BucketName"))
 
 	// Chequeo Conexión a la BD o Conecto la BD
 

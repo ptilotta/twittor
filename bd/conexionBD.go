@@ -13,14 +13,12 @@ import (
 var MongoCN *mongo.Client
 var DatabaseName string
 
-type key models.Key
-
 func ConectarBD(ctx context.Context) error {
 
 	// sss
-	user := string(ctx.Value("user").(key))
-	passwd := string(ctx.Value("password").(key))
-	host := string(ctx.Value("host").(key))
+	user := string(ctx.Value("user").(models.Key))
+	passwd := string(ctx.Value("password").(models.Key))
+	host := string(ctx.Value("host").(models.Key))
 	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", user, passwd, host)
 	fmt.Println(connStr)
 	var clientOptions = options.Client().ApplyURI(connStr)
@@ -36,7 +34,7 @@ func ConectarBD(ctx context.Context) error {
 	}
 	fmt.Println("Conexión Exitosa con la BD")
 	MongoCN = client
-	DatabaseName = string(ctx.Value("database").(key))
+	DatabaseName = string(ctx.Value("database").(models.Key))
 	return nil
 }
 

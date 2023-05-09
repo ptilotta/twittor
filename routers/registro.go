@@ -17,7 +17,7 @@ func Registro(ctx context.Context) models.RespApi {
 	r.Status = 400
 
 	fmt.Println("Entré a Registro")
-	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
+	err := json.Unmarshal([]byte(string(ctx.Value("body").(models.Key))), &t)
 	if err != nil {
 		r.Message = err.Error()
 		fmt.Println(r.Message)

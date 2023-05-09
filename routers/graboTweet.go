@@ -14,7 +14,7 @@ func GraboTweet(ctx context.Context) models.RespApi {
 	var r models.RespApi
 	r.Status = 400
 
-	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &mensaje)
+	err := json.Unmarshal([]byte(string(ctx.Value("body").(models.Key))), &mensaje)
 	if err != nil {
 		r.Message = "Ocurrió un error al intentar decodificar el body " + err.Error()
 		return r

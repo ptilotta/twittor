@@ -19,7 +19,7 @@ func Login(ctx context.Context) models.RespApi {
 	var r models.RespApi
 	r.Status = 400
 
-	err := json.Unmarshal([]byte(ctx.Value("body").(string)), &t)
+	err := json.Unmarshal([]byte(string(ctx.Value("body").(models.Key))), &t)
 
 	if err != nil {
 		r.Message = "Usuario y/o Contraseña inválidos " + err.Error()

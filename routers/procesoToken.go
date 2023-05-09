@@ -17,7 +17,6 @@ var IDUsuario string
 
 /*ProcesoToken proceso token para extraer sus valores */
 func ProcesoToken(tk string, JWTSign string) (*models.Claim, bool, string, error) {
-	//miClave := []byte("MastersdelDesarrollo_grupodeFacebook")
 	miClave := []byte(JWTSign)
 	var claims models.Claim
 

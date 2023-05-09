@@ -7,7 +7,6 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-/*InsertoRelacion graba la relación en la BD */
 func InsertoRelacion(t models.Relacion) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()

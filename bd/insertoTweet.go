@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-/*InsertoTweet graba el Tweet en la BD */
 func InsertoTweet(t models.GraboTweet) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()

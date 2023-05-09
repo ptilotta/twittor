@@ -12,7 +12,7 @@ import (
 func GeneroJWT(ctx context.Context, t models.Usuario) (string, error) {
 
 	//miClave := []byte("MastersdelDesarrollo_grupodeFacebook")
-	miClave := []byte(ctx.Value("jwtSign").(string))
+	miClave := []byte(string(ctx.Value("jwtSign").(models.Key)))
 
 	payload := jwt.MapClaims{
 		"email":            t.Email,

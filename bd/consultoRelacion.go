@@ -8,7 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-/*ConsultoRelacion consulta la relacion entre 2 usuarios */
 func ConsultoRelacion(t models.Relacion) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()

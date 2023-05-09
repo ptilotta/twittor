@@ -7,7 +7,6 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-/*BorroRelacion borra la relacion en la BD */
 func BorroRelacion(t models.Relacion) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
