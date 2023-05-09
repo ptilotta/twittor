@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func VerPerfil(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
+func VerPerfil(request events.APIGatewayV2HTTPRequest) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

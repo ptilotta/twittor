@@ -11,12 +11,14 @@ import (
 	"github.com/ptilotta/twittor/awsgo"
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/handlers"
+	"github.com/ptilotta/twittor/models"
 	"github.com/ptilotta/twittor/secretmanager"
 )
 
 func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) (*events.APIGatewayProxyResponse, error) {
 
 	var res *events.APIGatewayProxyResponse
+	type key models.Key
 
 	awsgo.InicializoAWS()
 
@@ -45,16 +47,15 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	path := strings.Replace(request.RawPath, os.Getenv("UrlPrefix"), "", -1)
 
-	type clave string
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("path"), path)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("method"), request.RequestContext.HTTP.Method)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("user"), SecretModel.Username)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("password"), SecretModel.Password)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("host"), SecretModel.Host)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("database"), SecretModel.Database)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("jwtSign"), SecretModel.JWTSign)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("body"), request.Body)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("bucketName"), os.Getenv("BucketName"))
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("path"), path)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("method"), request.RequestContext.HTTP.Method)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("user"), SecretModel.Username)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("password"), SecretModel.Password)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("host"), SecretModel.Host)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("database"), SecretModel.Database)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("jwtSign"), SecretModel.JWTSign)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("body"), request.Body)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, key("bucketName"), os.Getenv("BucketName"))
 
 	// Chequeo Conexión a la BD o Conecto la BD
 

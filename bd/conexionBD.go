@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ptilotta/twittor/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -12,8 +13,11 @@ import (
 var MongoCN *mongo.Client
 var DatabaseName string
 
+type key models.Key
+
 func ConectarBD(ctx context.Context) error {
-	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", ctx.Value("user").(string), ctx.Value("password").(string), ctx.Value("host").(string))
+
+	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", ctx.Value("user").(key), ctx.Value("password").(key), ctx.Value("host").(key))
 	fmt.Println(connStr)
 	var clientOptions = options.Client().ApplyURI(connStr)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -28,7 +32,7 @@ func ConectarBD(ctx context.Context) error {
 	}
 	fmt.Println("Conexión Exitosa con la BD")
 	MongoCN = client
-	DatabaseName = ctx.Value("database").(string)
+	DatabaseName = string(ctx.Value("database").(key))
 	return nil
 }
 
