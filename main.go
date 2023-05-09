@@ -45,15 +45,16 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	path := strings.Replace(request.RawPath, os.Getenv("UrlPrefix"), "", -1)
 
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "path", path)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "method", request.RequestContext.HTTP.Method)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "user", SecretModel.Username)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "password", SecretModel.Password)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "host", SecretModel.Host)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "jwtSign", SecretModel.JWTSign)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "body", request.Body)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "header", request.Headers)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, "bucketName", os.Getenv("BucketName"))
+	type clave string
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("path"), path)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("method"), request.RequestContext.HTTP.Method)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("user"), SecretModel.Username)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("password"), SecretModel.Password)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("host"), SecretModel.Host)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("database"), SecretModel.Database)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("jwtSign"), SecretModel.JWTSign)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("body"), request.Body)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, clave("bucketName"), os.Getenv("BucketName"))
 
 	// Chequeo Conexión a la BD o Conecto la BD
 
@@ -61,12 +62,6 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 
 	respAPI := handlers.Manejadores(awsgo.Ctx, request)
 
-	fmt.Println("==================================")
-	fmt.Println("Status")
-	fmt.Println(respAPI.Status)
-	fmt.Println("Message")
-	fmt.Println(respAPI.Message)
-	fmt.Println("==================================")
 	fmt.Println("Sali de Manejadores")
 	if respAPI.CustomResp == nil {
 		headersResp := map[string]string{
@@ -101,6 +96,5 @@ func ValidoParametros() bool {
 	if !traeParametro {
 		return traeParametro
 	}
-
 	return traeParametro
 }

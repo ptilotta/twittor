@@ -10,6 +10,7 @@ import (
 
 /*MongoCN es el objeto de conexión a la BD */
 var MongoCN *mongo.Client
+var DatabaseName string
 
 func ConectarBD(ctx context.Context) error {
 	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", ctx.Value("user").(string), ctx.Value("password").(string), ctx.Value("host").(string))
@@ -27,6 +28,7 @@ func ConectarBD(ctx context.Context) error {
 	}
 	fmt.Println("Conexión Exitosa con la BD")
 	MongoCN = client
+	DatabaseName = ctx.Value("database").(string)
 	return nil
 }
 

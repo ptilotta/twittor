@@ -13,7 +13,7 @@ func BorroTweet(ID string, UserID string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
 	defer cancel()
 
-	db := MongoCN.Database("twittor")
+	db := MongoCN.Database(DatabaseName)
 	col := db.Collection("tweet")
 
 	objID, _ := primitive.ObjectIDFromHex(ID)
