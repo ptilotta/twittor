@@ -17,6 +17,7 @@ type key models.Key
 
 func ConectarBD(ctx context.Context) error {
 
+	// sss
 	user := string(ctx.Value("user").(key))
 	passwd := string(ctx.Value("password").(key))
 	host := string(ctx.Value("host").(key))
