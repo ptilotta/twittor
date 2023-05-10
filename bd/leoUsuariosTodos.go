@@ -20,7 +20,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
-	fmt.Println("DatabaseName = " + DatabaseName)
 	db := MongoCN.Database(DatabaseName)
 	col := db.Collection("usuarios")
 
@@ -34,10 +33,12 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		"nombre": bson.M{"$regex": `(?i)` + search},
 	}
 
+	fmt.Println("Antes del FIND")
 	cur, err := col.Find(ctx, query, findOptions)
 	if err != nil {
 		return results, false
 	}
+	fmt.Println("Despues del FIND")
 
 	var encontrado, incluir bool
 
