@@ -9,18 +9,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-/*MongoCN es el objeto de conexión a la BD */
 var MongoCN *mongo.Client
 var DatabaseName string
 
 func ConectarBD(ctx context.Context) error {
 
-	// sss
 	user := ctx.Value(models.Key("user")).(string)
 	passwd := ctx.Value(models.Key("password")).(string)
 	host := ctx.Value(models.Key("host")).(string)
 	connStr := fmt.Sprintf("mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority", user, passwd, host)
-	fmt.Println(connStr)
+
 	var clientOptions = options.Client().ApplyURI(connStr)
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {

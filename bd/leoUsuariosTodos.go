@@ -48,6 +48,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 			return results, false
 		}
 
+		fmt.Println("s = " + s.Nombre)
 		var r models.Relacion
 		r.UsuarioID = ID
 		r.UsuarioRelacionID = s.ID.Hex()

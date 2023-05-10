@@ -25,14 +25,14 @@ func ConsultaRelacion(request events.APIGatewayV2HTTPRequest, claim models.Claim
 
 	var resp models.RespuestaConsultaRelacion
 
-	status, err := bd.ConsultoRelacion(t)
-	if err != nil || !status {
+	hayRelacion := bd.ConsultoRelacion(t)
+	if !hayRelacion {
 		resp.Status = false
 	} else {
 		resp.Status = true
 	}
 
-	respJson, err := json.Marshal(status)
+	respJson, err := json.Marshal(hayRelacion)
 	if err != nil {
 		r.Status = 500
 		r.Message = "Error al formatear los datos de los usuarios como JSON"
