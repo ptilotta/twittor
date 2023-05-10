@@ -8,11 +8,10 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-/*GeneroJWT genera el encriptado con JWT */
 func GeneroJWT(ctx context.Context, t models.Usuario) (string, error) {
 
-	//miClave := []byte("MastersdelDesarrollo_grupodeFacebook")
-	miClave := []byte(string(ctx.Value("jwtSign").(models.Key)))
+	jwtSign := ctx.Value(models.Key("jwtSign")).(string)
+	miClave := []byte(jwtSign)
 
 	payload := jwt.MapClaims{
 		"email":            t.Email,
