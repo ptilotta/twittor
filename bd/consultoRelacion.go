@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func ConsultoRelacion(t models.Relacion) (bool, error) {
+func ConsultoRelacion(t models.Relacion) bool {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -23,7 +23,7 @@ func ConsultoRelacion(t models.Relacion) (bool, error) {
 	var resultado models.Relacion
 	err := col.FindOne(ctx, condicion).Decode(&resultado)
 	if err != nil {
-		return false, err
+		return false
 	}
-	return true, nil
+	return true
 }
