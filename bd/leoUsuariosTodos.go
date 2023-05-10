@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/ptilotta/twittor/models"
@@ -57,9 +58,11 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 
 		encontrado, err = ConsultoRelacion(r)
 		if err != nil {
-			fmt.Println("consultoRelacion = " + err.Error())
-			return results, false
+			if !strings.Contains("mongo: no documents in result", err.Error()) {
+				return results, false
+			}
 		}
+
 		if tipo == "new" && !encontrado {
 			incluir = true
 		}
