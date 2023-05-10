@@ -9,11 +9,9 @@ import (
 	"github.com/ptilotta/twittor/routers"
 )
 
-type key models.Key
-
 func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
 
-	fmt.Println("Voy a procesar " + ctx.Value("path").(key) + " > " + ctx.Value("method").(key))
+	fmt.Println("Voy a procesar " + ctx.Value(models.Key("path")).(string) + " > " + ctx.Value(models.Key("method")).(string))
 
 	var r models.RespApi
 	r.Status = 400
@@ -25,9 +23,9 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 		return r
 	}
 
-	switch ctx.Value("method").(key) {
+	switch ctx.Value(models.Key("method")).(string) {
 	case "POST":
-		switch ctx.Value("path").(key) {
+		switch ctx.Value(models.Key("path")).(string) {
 		case "registro":
 			return routers.Registro(ctx)
 		case "login":
@@ -42,33 +40,33 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 			return routers.UploadImage(ctx, "B", request, claim)
 		}
 	case "GET":
-		switch ctx.Value("path").(key) {
+		switch ctx.Value(models.Key("path")).(string) {
 		case "verperfil":
 			return routers.VerPerfil(request)
 		case "leoTweets":
-			return routers.LeoTweets(ctx, request)
+			return routers.LeoTweets(request)
 		case "consultaRelacion":
-			return routers.ConsultaRelacion(ctx, request, claim)
+			return routers.ConsultaRelacion(request, claim)
 		case "listaUsuarios":
-			return routers.ListaUsuarios(ctx, request, claim)
+			return routers.ListaUsuarios(request, claim)
 		case "leoTweetsSeguidores":
-			return routers.LeoTweetsSeguidores(ctx, request, claim)
+			return routers.LeoTweetsSeguidores(request, claim)
 		case "obtenerAvatar":
 			return routers.ObtenerImagen(ctx, "A", request, claim)
 		case "obtenerBanner":
 			return routers.ObtenerImagen(ctx, "B", request, claim)
 		}
 	case "PUT":
-		switch ctx.Value("path").(key) {
+		switch ctx.Value(models.Key("path")).(string) {
 		case "modificarPerfil":
 			return routers.ModificarPerfil(ctx, claim)
 		}
 	case "DELETE":
-		switch ctx.Value("path").(key) {
+		switch ctx.Value(models.Key("path")).(string) {
 		case "eliminarTweet":
-			return routers.EliminarTweet(ctx, request, claim)
+			return routers.EliminarTweet(request, claim)
 		case "bajaRelacion":
-			return routers.BajaRelacion(ctx, request, claim)
+			return routers.BajaRelacion(request, claim)
 		}
 	}
 
@@ -79,7 +77,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 
 func validoAuthorization(ctx context.Context, request events.APIGatewayV2HTTPRequest) (bool, int, string, models.Claim) {
 
-	path := ctx.Value("path").(key)
+	path := ctx.Value(models.Key("path")).(string)
 	if path == "registro" || path == "login" || path == "obtenerAvatar" || path == "obtenerBanner" {
 		return true, 200, "", models.Claim{}
 	}
@@ -89,7 +87,7 @@ func validoAuthorization(ctx context.Context, request events.APIGatewayV2HTTPReq
 		return false, 401, "Token requerido", models.Claim{}
 	}
 
-	claim, todoOK, msg, err := routers.ProcesoToken(token, string(ctx.Value("jwtSign").(key)))
+	claim, todoOK, msg, err := routers.ProcesoToken(token, ctx.Value(models.Key("jwtSign")).(string))
 	if !todoOK {
 		if err != nil {
 			fmt.Println("Error en el token " + err.Error())

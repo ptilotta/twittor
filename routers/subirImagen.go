@@ -41,7 +41,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	var r models.RespApi
 	r.Status = 400
 
-	body := string(ctx.Value("body").(models.Key))
+	body := ctx.Value(models.Key("body")).(string)
 	decodedBody, err := base64.StdEncoding.DecodeString(body)
 	if err != nil {
 		r.Message = "Error decodificando cuerpo Base64: " + err.Error()
@@ -100,9 +100,8 @@ func getFileExtension(contentType string) string {
 }
 
 func uploadToS3(ctx context.Context, svc *s3.Client, filename string, data []byte, contentType string) error {
-	bucketName := aws.String(string(ctx.Value("bucketName").(models.Key)))
 	_, err := svc.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:        bucketName,
+		Bucket:        aws.String(ctx.Value(models.Key("bucketName")).(string)),
 		Key:           aws.String(filename),
 		Body:          aws.ReadSeekCloser(strings.NewReader(string(data))),
 		ContentType:   aws.String(contentType),

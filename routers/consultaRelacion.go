@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -9,7 +8,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func ConsultaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func ConsultaRelacion(request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

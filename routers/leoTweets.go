@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"context"
 	"encoding/json"
 	"strconv"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func LeoTweets(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
+func LeoTweets(request events.APIGatewayV2HTTPRequest) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

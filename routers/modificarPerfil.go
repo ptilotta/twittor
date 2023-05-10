@@ -16,7 +16,8 @@ func ModificarPerfil(ctx context.Context, claim models.Claim) models.RespApi {
 
 	var t models.Usuario
 
-	err := json.Unmarshal([]byte(string(ctx.Value("body").(models.Key))), &t)
+	body := ctx.Value(models.Key("body")).(string)
+	err := json.Unmarshal([]byte(body), &t)
 	if err != nil {
 		r.Message = "Datos Incorrectos " + err.Error()
 		return r

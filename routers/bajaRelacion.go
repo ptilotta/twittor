@@ -1,14 +1,12 @@
 package routers
 
 import (
-	"context"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
-func BajaRelacion(ctx context.Context, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func BajaRelacion(request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

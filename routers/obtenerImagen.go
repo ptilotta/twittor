@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -65,9 +64,10 @@ func ObtenerImagen(ctx context.Context, uploadType string, request events.APIGat
 }
 
 func downloadFromS3(ctx context.Context, svc *s3.Client, filename string) (*bytes.Buffer, error) {
-	// Descargar el archivo de S3
+
+	bucket := ctx.Value(models.Key("bucket")).(string)
 	obj, err := svc.GetObject(ctx, &s3.GetObjectInput{
-		Bucket: aws.String(os.Getenv("S3_BUCKET")),
+		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
 	})
 	if err != nil {
@@ -75,7 +75,6 @@ func downloadFromS3(ctx context.Context, svc *s3.Client, filename string) (*byte
 	}
 	defer obj.Body.Close()
 
-	// Leer el contenido del archivo en un bytes.Buffer
 	file, err := ioutil.ReadAll(obj.Body)
 	if err != nil {
 		return nil, err
