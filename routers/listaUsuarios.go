@@ -16,7 +16,7 @@ func ListaUsuarios(request events.APIGatewayV2HTTPRequest, claim models.Claim) m
 	r.Status = 400
 
 	fmt.Println(request.QueryStringParameters)
-	page := request.QueryStringParameters["pagina"]
+	page := request.QueryStringParameters["page"]
 	typeUser := request.QueryStringParameters["type"]
 	search := request.QueryStringParameters["search"]
 
