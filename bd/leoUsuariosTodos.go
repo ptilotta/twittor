@@ -53,9 +53,11 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 
 		incluir = false
 
-		fmt.Println("Antes de Consulto Relación")
 		encontrado := ConsultoRelacion(r)
-		fmt.Println("Despues de Consulto Relación")
+		fmt.Println("===================================")
+		fmt.Println("encontrado = ")
+		fmt.Println(encontrado)
+		fmt.Println("===================================")
 
 		if tipo == "new" && !encontrado {
 			incluir = true
