@@ -52,7 +52,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		r.UsuarioRelacionID = s.ID.Hex()
 
 		incluir = false
-		log.Println(tipo)
+		log.Println("tipo = " + tipo)
 
 		encontrado := ConsultoRelacion(r)
 
