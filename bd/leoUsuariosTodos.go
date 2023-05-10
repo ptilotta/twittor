@@ -2,6 +2,7 @@ package bd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -19,6 +20,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
+	fmt.Println("DatabaseName = " + DatabaseName)
 	db := MongoCN.Database(DatabaseName)
 	col := db.Collection("usuarios")
 
