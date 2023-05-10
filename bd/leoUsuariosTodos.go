@@ -66,6 +66,10 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 			incluir = false
 		}
 
+		fmt.Println("===================================")
+		fmt.Println("incluir = ")
+		fmt.Println(incluir)
+		fmt.Println("===================================")
 		if incluir {
 			s.Password = ""
 			s.Biografia = ""

@@ -2,7 +2,6 @@ package routers
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -15,7 +14,6 @@ func ListaUsuarios(request events.APIGatewayV2HTTPRequest, claim models.Claim) m
 	var r models.RespApi
 	r.Status = 400
 
-	fmt.Println(request.QueryStringParameters)
 	page := request.QueryStringParameters["page"]
 	typeUser := request.QueryStringParameters["type"]
 	search := request.QueryStringParameters["search"]
