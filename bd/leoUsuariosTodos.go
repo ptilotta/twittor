@@ -60,13 +60,16 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		fmt.Println("===================================")
 
 		if tipo == "new" && !encontrado {
+			fmt.Println("tipo == 'new' && !encontrado")
 			incluir = true
 		}
 		if tipo == "follow" && encontrado {
+			fmt.Println("tipo == 'follow' && encontrado")
 			incluir = true
 		}
 
 		if r.UsuarioRelacionID == ID {
+			fmt.Println("r.UsuarioRelacionID == ID")
 			incluir = false
 		}
 
