@@ -45,7 +45,6 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		var s models.Usuario
 		err := cur.Decode(&s)
 		if err != nil {
-			fmt.Println("cur.Decode " + err.Error())
 			return results, false
 		}
 
@@ -59,6 +58,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		encontrado, err = ConsultoRelacion(r)
 		if err != nil {
 			if !strings.Contains("mongo: no documents in result", err.Error()) {
+				fmt.Println(err.Error())
 				return results, false
 			}
 		}
