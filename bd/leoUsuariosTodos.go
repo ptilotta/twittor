@@ -44,6 +44,7 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		var s models.Usuario
 		err := cur.Decode(&s)
 		if err != nil {
+			fmt.Println("Decode = " + err.Error())
 			return results, false
 		}
 
