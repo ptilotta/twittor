@@ -49,6 +49,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		return r
 	}
 
+	fmt.Println(request.Headers)
 	ext := getFileExtension(request.Headers["Content-Type"])
 	if ext == "" {
 		r.Message = "Error obteniendo extensión del archivo"
