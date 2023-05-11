@@ -90,9 +90,9 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 
 func getFileExtension(contentType string) string {
 	switch {
-	case strings.Contains(contentType, "jpeg"):
+	case strings.Contains(contentType, "image/jpeg"):
 		return ".jpg"
-	case strings.Contains(contentType, "png"):
+	case strings.Contains(contentType, "image/png"):
 		return ".png"
 	default:
 		return ""

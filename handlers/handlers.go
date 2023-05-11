@@ -26,13 +26,13 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 	switch ctx.Value(models.Key("method")).(string) {
 	case "POST":
 		switch ctx.Value(models.Key("path")).(string) {
-		case "registro":
+		case "registro": // listo
 			return routers.Registro(ctx)
-		case "login":
+		case "login": // listo
 			return routers.Login(ctx)
-		case "tweet":
+		case "tweet": // listo
 			return routers.GraboTweet(ctx)
-		case "altaRelacion":
+		case "altaRelacion": // listo
 			return routers.AltaRelacion(ctx, request, claim)
 		case "subirAvatar":
 			return routers.UploadImage(ctx, "A", request, claim)
@@ -41,15 +41,15 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 		}
 	case "GET":
 		switch ctx.Value(models.Key("path")).(string) {
-		case "verperfil":
+		case "verperfil": // listo
 			return routers.VerPerfil(request)
-		case "leoTweets":
+		case "leoTweets": // listo
 			return routers.LeoTweets(request)
-		case "consultaRelacion":
+		case "consultaRelacion": // listo
 			return routers.ConsultaRelacion(request, claim)
-		case "listaUsuarios":
+		case "listaUsuarios": // listo
 			return routers.ListaUsuarios(request, claim)
-		case "leoTweetsSeguidores":
+		case "leoTweetsSeguidores": // listo
 			return routers.LeoTweetsSeguidores(request, claim)
 		case "obtenerAvatar":
 			return routers.ObtenerImagen(ctx, "A", request, claim)
@@ -58,14 +58,14 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 		}
 	case "PUT":
 		switch ctx.Value(models.Key("path")).(string) {
-		case "modificarPerfil":
+		case "modificarPerfil": // listo
 			return routers.ModificarPerfil(ctx, claim)
 		}
 	case "DELETE":
 		switch ctx.Value(models.Key("path")).(string) {
-		case "eliminarTweet":
+		case "eliminarTweet": // listo
 			return routers.EliminarTweet(request, claim)
-		case "bajaRelacion":
+		case "bajaRelacion": // listo
 			return routers.BajaRelacion(request, claim)
 		}
 	}

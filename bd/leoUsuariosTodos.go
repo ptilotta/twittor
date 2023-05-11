@@ -54,29 +54,18 @@ func LeoUsuariosTodos(ID string, page int64, search string, tipo string) ([]*mod
 		incluir = false
 
 		encontrado := ConsultoRelacion(r)
-		fmt.Println("===================================")
-		fmt.Println("encontrado = ")
-		fmt.Println(encontrado)
-		fmt.Println("===================================")
 
 		if tipo == "new" && !encontrado {
-			fmt.Println("tipo == 'new' && !encontrado")
 			incluir = true
 		}
 		if tipo == "follow" && encontrado {
-			fmt.Println("tipo == 'follow' && encontrado")
 			incluir = true
 		}
 
 		if r.UsuarioRelacionID == ID {
-			fmt.Println("r.UsuarioRelacionID == ID")
 			incluir = false
 		}
 
-		fmt.Println("===================================")
-		fmt.Println("incluir = ")
-		fmt.Println(incluir)
-		fmt.Println("===================================")
 		if incluir {
 			s.Password = ""
 			s.Biografia = ""
