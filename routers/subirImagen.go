@@ -48,27 +48,21 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		return r
 	}
 
-	/*	ext := getFileExtension(request.Headers["content-type"])
-		if ext == "" {
-			r.Message = "Error obteniendo extensión del archivo"
-			return r
-		}
-	*/
 	var filename string
 	var usuario models.Usuario
 
 	switch uploadType {
 	case "A":
-		filename = "avatars/" + claim.ID.Hex() + "jpg"
-		usuario.Avatar = claim.ID.Hex() + "jpg"
+		filename = "avatars/" + claim.ID.Hex() + ".jpg"
+		usuario.Avatar = claim.ID.Hex() + ".jpg"
 	case "B":
-		filename = "banners/" + claim.ID.Hex() + "jpg"
-		usuario.Banner = claim.ID.Hex() + "jpg"
+		filename = "banners/" + claim.ID.Hex() + ".jpg"
+		usuario.Banner = claim.ID.Hex() + ".jpg"
 	}
 
 	svc := s3.NewFromConfig(awsgo.Cfg)
 
-	if err := uploadToS3(ctx, svc, filename, decodedBody, "jpg"); err != nil {
+	if err := uploadToS3(ctx, svc, filename, decodedBody, ".jpg"); err != nil {
 		r.Status = 500
 		r.Message = "Error cargando archivo a S3: " + err.Error()
 		return r
@@ -88,19 +82,6 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	return r
 }
 
-/*
-	func getFileExtension(contentType string) string {
-		fmt.Println("contentType = " + contentType)
-		switch {
-		case strings.Contains(contentType, "image/jpeg"):
-			return ".jpg"
-		case strings.Contains(contentType, "image/png"):
-			return ".png"
-		default:
-			return ""
-		}
-	}
-*/
 func uploadToS3(ctx context.Context, svc *s3.Client, filename string, data []byte, contentType string) error {
 	_, err := svc.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:        aws.String(ctx.Value(models.Key("bucketName")).(string)),
