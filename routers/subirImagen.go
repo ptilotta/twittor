@@ -3,6 +3,7 @@ package routers
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -89,6 +90,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 }
 
 func getFileExtension(contentType string) string {
+	fmt.Println("contentType = " + contentType)
 	switch {
 	case strings.Contains(contentType, "image/jpeg"):
 		return ".jpg"
