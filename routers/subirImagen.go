@@ -73,16 +73,19 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		r.Message = "Error realizando el CreateFormFile: " + err.Error()
 		return r
 	}
+
 	part.Write(fileBytes)
 	writer.Close()
 
 	svc := s3.NewFromConfig(awsgo.Cfg)
 	// Subir el archivo al bucket S3
 	_, err = svc.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(ctx.Value(models.Key("bucketName")).(string)),
-		Key:    aws.String(filename),
-		Body:   fileBody,
+		Bucket:      aws.String(ctx.Value(models.Key("bucketName")).(string)),
+		Key:         aws.String(filename),
+		Body:        fileBody,
+		ContentType: aws.String("image/jpeg"),
 	})
+
 	if err != nil {
 		r.Status = 500
 		r.Message = err.Error()
