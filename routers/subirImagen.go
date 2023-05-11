@@ -3,7 +3,6 @@ package routers
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
 	"mime/multipart"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -42,16 +41,9 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	var r models.RespApi
 	r.Status = 400
 
-	bodyX := ctx.Value(models.Key("body")).(string)
 	var filename string
 
-	body := bytes.NewReader([]byte(bodyX))
-	fileBytes, err := ioutil.ReadAll(body)
-	if err != nil {
-		r.Status = 500
-		r.Message = "Error realizando el ReadAll del Body: " + err.Error()
-		return r
-	}
+	fileBytes := []byte(ctx.Value(models.Key("body")).(string))
 
 	var usuario models.Usuario
 
