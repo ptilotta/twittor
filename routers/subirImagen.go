@@ -74,7 +74,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	_, err = svc.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(ctx.Value(models.Key("bucketName")).(string)),
 		Key:         aws.String(filename),
-		Body:        fileBody,
+		Body:        bytes.NewReader(fileBytes),
 		ContentType: aws.String("image/jpeg"),
 	})
 
