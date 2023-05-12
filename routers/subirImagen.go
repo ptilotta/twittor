@@ -3,7 +3,6 @@ package routers
 import (
 	"bytes"
 	"context"
-	"mime/multipart"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
@@ -57,21 +56,21 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	}
 
 	// Crear un objeto de archivo multipart/form-data
-	fileBody := &bytes.Buffer{}
-	writer := multipart.NewWriter(fileBody)
-	part, err := writer.CreateFormFile("file", filename)
-	if err != nil {
-		r.Status = 500
-		r.Message = "Error realizando el CreateFormFile: " + err.Error()
-		return r
-	}
+	/*	fileBody := &bytes.Buffer{}
+		writer := multipart.NewWriter(fileBody)
+		part, err := writer.CreateFormFile("file", filename)
+		if err != nil {
+			r.Status = 500
+			r.Message = "Error realizando el CreateFormFile: " + err.Error()
+			return r
+		}
 
-	part.Write(fileBytes)
-	writer.Close()
-
+		part.Write(fileBytes)
+		writer.Close()
+	*/
 	svc := s3.NewFromConfig(awsgo.Cfg)
 	// Subir el archivo al bucket S3
-	_, err = svc.PutObject(ctx, &s3.PutObjectInput{
+	_, err := svc.PutObject(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(ctx.Value(models.Key("bucketName")).(string)),
 		Key:         aws.String(filename),
 		Body:        bytes.NewReader(fileBytes),
