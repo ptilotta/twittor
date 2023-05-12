@@ -120,7 +120,7 @@ func uploadToS3(ctx context.Context, svc *s3.Client, filename string, data []byt
 		Bucket:        aws.String(ctx.Value(models.Key("bucketName")).(string)),
 		Key:           aws.String(filename),
 		Body:          aws.ReadSeekCloser(strings.NewReader(string(data))),
-		ContentType:   aws.String(contentType),
+		ContentType:   aws.String("image/jpeg"),
 		ContentLength: *aws.Int64(int64(len(data))),
 	})
 	if err != nil {
