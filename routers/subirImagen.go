@@ -1,8 +1,9 @@
 package routers
 
 import (
-	"bytes"
 	"context"
+	"encoding/base64"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
@@ -40,10 +41,14 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	var r models.RespApi
 	r.Status = 400
 
+	body := ctx.Value(models.Key("body")).(string)
+	decodedBody, err := base64.StdEncoding.DecodeString(body)
+	if err != nil {
+		r.Message = "Error decodificando cuerpo Base64: " + err.Error()
+		return r
+	}
+
 	var filename string
-
-	fileBytes := []byte(ctx.Value(models.Key("body")).(string))
-
 	var usuario models.Usuario
 
 	switch uploadType {
@@ -55,31 +60,11 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		usuario.Banner = claim.ID.Hex() + ".jpg"
 	}
 
-	// Crear un objeto de archivo multipart/form-data
-	/*	fileBody := &bytes.Buffer{}
-		writer := multipart.NewWriter(fileBody)
-		part, err := writer.CreateFormFile("file", filename)
-		if err != nil {
-			r.Status = 500
-			r.Message = "Error realizando el CreateFormFile: " + err.Error()
-			return r
-		}
-
-		part.Write(fileBytes)
-		writer.Close()
-	*/
 	svc := s3.NewFromConfig(awsgo.Cfg)
-	// Subir el archivo al bucket S3
-	_, err := svc.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(ctx.Value(models.Key("bucketName")).(string)),
-		Key:         aws.String(filename),
-		Body:        bytes.NewReader(fileBytes),
-		ContentType: aws.String("image/jpeg"),
-	})
 
-	if err != nil {
+	if err := uploadToS3(ctx, svc, filename, decodedBody, ".jpg"); err != nil {
 		r.Status = 500
-		r.Message = err.Error()
+		r.Message = "Error cargando archivo a S3: " + err.Error()
 		return r
 	}
 
@@ -96,4 +81,50 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 
 	return r
 
+	/*
+			    // Leer el archivo JPEG de la solicitud HTTP
+		    body := bytes.NewReader([]byte(request.Body))
+		    fileBytes, err := ioutil.ReadAll(body)
+		    if err != nil {
+		        return events.APIGatewayProxyResponse{Body: err.Error(), StatusCode: 500}, nil
+		    }
+
+		    // Crear un objeto de archivo multipart/form-data
+		    fileBody := &bytes.Buffer{}
+		    writer := multipart.NewWriter(fileBody)
+		    part, err := writer.CreateFormFile("file", "image.jpg")
+		    if err != nil {
+		        return events.APIGatewayProxyResponse{Body: err.Error(), StatusCode: 500}, nil
+		    }
+		    part.Write(fileBytes)
+		    writer.Close()
+
+		    // Configurar una sesión de AWS
+		    sess := session.Must(session.NewSession())
+		    svc := s3.New(sess)
+
+		    // Subir el archivo al bucket S3
+		    _, err = svc.PutObject(&s3.PutObjectInput{
+		        Bucket: aws.String(s3Bucket),
+		        Key:    aws.String("image.jpg"),
+		        Body:   fileBody,
+		    })
+		    if err != nil {
+		        return events.APIGatewayProxyResponse{Body: err.Error(), StatusCode: 500}, nil
+		    }
+	*/
+}
+
+func uploadToS3(ctx context.Context, svc *s3.Client, filename string, data []byte, contentType string) error {
+	_, err := svc.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:        aws.String(ctx.Value(models.Key("bucketName")).(string)),
+		Key:           aws.String(filename),
+		Body:          aws.ReadSeekCloser(strings.NewReader(string(data))),
+		ContentType:   aws.String(contentType),
+		ContentLength: *aws.Int64(int64(len(data))),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
