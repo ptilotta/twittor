@@ -68,7 +68,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 
 	fmt.Println("paso 1")
 
-	mediaType, params, err := mime.ParseMediaType(request.Headers["content-type"])
+	mediaType, params, err := mime.ParseMediaType(request.Headers["Content-Type"])
 	if err != nil {
 		r.Status = 500
 		r.Message = err.Error()
