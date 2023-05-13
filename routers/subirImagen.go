@@ -66,7 +66,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		usuario.Banner = claim.ID.Hex() + ".jpg"
 	}
 
-	fmt.Println(request.Headers)
+	fmt.Println("paso 1")
 
 	mediaType, params, err := mime.ParseMediaType(request.Headers["content-type"])
 	if err != nil {
@@ -75,6 +75,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		return r
 	}
 
+	fmt.Println("paso 2")
 	if strings.HasPrefix(mediaType, "multipart/") {
 		body, err := base64.StdEncoding.DecodeString(request.Body)
 		if err != nil {
@@ -82,6 +83,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 			r.Message = err.Error()
 			return r
 		}
+		fmt.Println("paso 3")
 
 		mr := multipart.NewReader(bytes.NewReader(body), params["boundary"])
 		p, err := mr.NextPart()
