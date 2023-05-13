@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"mime"
 	"mime/multipart"
@@ -64,6 +65,8 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 		filename = "banners/" + claim.ID.Hex() + ".jpg"
 		usuario.Banner = claim.ID.Hex() + ".jpg"
 	}
+
+	fmt.Println(request.Headers)
 
 	mediaType, params, err := mime.ParseMediaType(request.Headers["content-type"])
 	if err != nil {
