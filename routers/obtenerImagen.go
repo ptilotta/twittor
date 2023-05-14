@@ -65,9 +65,7 @@ func ObtenerImagen(ctx context.Context, uploadType string, request events.APIGat
 
 func downloadFromS3(ctx context.Context, svc *s3.Client, filename string) (*bytes.Buffer, error) {
 
-	bucket := ctx.Value(models.Key("bucket")).(string)
-	fmt.Println("bucket = " + bucket)
-	fmt.Println("filename = " + filename)
+	bucket := ctx.Value(models.Key("bucketName")).(string)
 	obj, err := svc.GetObject(ctx, &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(filename),
