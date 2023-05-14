@@ -82,8 +82,7 @@ func validoAuthorization(ctx context.Context, request events.APIGatewayProxyRequ
 		return true, 200, "", models.Claim{}
 	}
 
-	fmt.Println("authorization = " + request.Headers["Authorization"])
-	token := request.Headers["authorization"]
+	token := request.Headers["Authorization"]
 	if len(token) == 0 {
 		return false, 401, "Token requerido", models.Claim{}
 	}
