@@ -48,7 +48,7 @@ func (rs *readSeeker) Seek(offset int64, whence int) (int64, error) {
 	return 0, nil
 }
 
-func UploadImage(ctx context.Context, uploadType string, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func UploadImage(ctx context.Context, uploadType string, request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

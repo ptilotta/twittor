@@ -9,7 +9,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func ListaUsuarios(request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func ListaUsuarios(request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

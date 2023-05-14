@@ -9,7 +9,7 @@ import (
 	"github.com/ptilotta/twittor/routers"
 )
 
-func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) models.RespApi {
+func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) models.RespApi {
 
 	fmt.Println("Voy a procesar " + ctx.Value(models.Key("path")).(string) + " > " + ctx.Value(models.Key("method")).(string))
 
@@ -75,7 +75,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayV2HTTPRequest) mo
 	return r
 }
 
-func validoAuthorization(ctx context.Context, request events.APIGatewayV2HTTPRequest) (bool, int, string, models.Claim) {
+func validoAuthorization(ctx context.Context, request events.APIGatewayProxyRequest) (bool, int, string, models.Claim) {
 
 	path := ctx.Value(models.Key("path")).(string)
 	if path == "registro" || path == "login" || path == "obtenerAvatar" || path == "obtenerBanner" {

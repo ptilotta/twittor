@@ -15,7 +15,7 @@ import (
 	"github.com/ptilotta/twittor/secretmanager"
 )
 
-func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) (*events.APIGatewayProxyResponse, error) {
+func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 
 	var res *events.APIGatewayProxyResponse
 	awsgo.InicializoAWS()
@@ -43,11 +43,11 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 		return res, nil
 	}
 
-	fmt.Println(request.PathParameters)
+	fmt.Println(request.Path)
 	path := strings.Replace(request.PathParameters["twitter"], os.Getenv("UrlPrefix"), "", -1)
 
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("path"), path)
-	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("method"), request.RequestContext.HTTP.Method)
+	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("method"), request.HTTPMethod)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("user"), SecretModel.Username)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("password"), SecretModel.Password)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("host"), SecretModel.Host)

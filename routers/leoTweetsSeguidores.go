@@ -9,7 +9,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func LeoTweetsSeguidores(request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func LeoTweetsSeguidores(request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

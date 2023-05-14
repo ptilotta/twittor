@@ -6,7 +6,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func EliminarTweet(request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func EliminarTweet(request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400

@@ -15,7 +15,7 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func ObtenerImagen(ctx context.Context, uploadType string, request events.APIGatewayV2HTTPRequest, claim models.Claim) models.RespApi {
+func ObtenerImagen(ctx context.Context, uploadType string, request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 
 	var r models.RespApi
 	r.Status = 400
