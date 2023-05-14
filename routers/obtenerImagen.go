@@ -40,6 +40,7 @@ func ObtenerImagen(ctx context.Context, uploadType string, request events.APIGat
 		filename = "banners/" + perfil.Banner
 	}
 
+	fmt.Println("Filename " + filename)
 	svc := s3.NewFromConfig(awsgo.Cfg)
 
 	// Descargar el archivo de S3
@@ -74,6 +75,7 @@ func downloadFromS3(ctx context.Context, svc *s3.Client, filename string) (*byte
 		return nil, err
 	}
 	defer obj.Body.Close()
+	fmt.Println("bucketName = " + bucket)
 
 	file, err := ioutil.ReadAll(obj.Body)
 	if err != nil {
