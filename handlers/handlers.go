@@ -34,9 +34,9 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 			return routers.GraboTweet(ctx)
 		case "altaRelacion": // listo
 			return routers.AltaRelacion(ctx, request, claim)
-		case "subirAvatar":
+		case "subirAvatar": // listo
 			return routers.UploadImage(ctx, "A", request, claim)
-		case "subirBanner":
+		case "subirBanner": // listo
 			return routers.UploadImage(ctx, "B", request, claim)
 		}
 	case "GET":
