@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 
+	"github.com/ptilotta/twittor/bd"
 	"github.com/ptilotta/twittor/models"
 )
 
@@ -119,6 +120,17 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 				}
 
 			}
+		}
+
+		/* Grabo BD con el Avatar */
+		var status bool
+
+		usuario.Avatar = IDUsuario + ".jpg"
+		status, err = bd.ModificoRegistro(usuario, IDUsuario)
+		if err != nil || !status {
+			r.Status = 400
+			r.Message = "Error al modificar registro del usuario " + err.Error()
+			return r
 		}
 
 	} else {
