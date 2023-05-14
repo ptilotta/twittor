@@ -13,6 +13,7 @@ func LeoTweetsSeguidores(request events.APIGatewayProxyRequest, claim models.Cla
 
 	var r models.RespApi
 	r.Status = 400
+	IDUsuario := claim.ID.Hex()
 
 	pagina := request.QueryStringParameters["pagina"]
 	if len(pagina) < 1 {

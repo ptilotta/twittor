@@ -17,6 +17,7 @@ func ListaUsuarios(request events.APIGatewayProxyRequest, claim models.Claim) mo
 	page := request.QueryStringParameters["page"]
 	typeUser := request.QueryStringParameters["type"]
 	search := request.QueryStringParameters["search"]
+	IDUsuario := claim.ID.Hex()
 
 	if len(page) == 0 {
 		page = "1"

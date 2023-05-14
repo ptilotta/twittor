@@ -52,6 +52,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 
 	var r models.RespApi
 	r.Status = 400
+	IDUsuario := claim.ID.Hex()
 
 	var filename string
 	var usuario models.Usuario

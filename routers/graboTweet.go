@@ -9,10 +9,11 @@ import (
 	"github.com/ptilotta/twittor/models"
 )
 
-func GraboTweet(ctx context.Context) models.RespApi {
+func GraboTweet(ctx context.Context, claim models.Claim) models.RespApi {
 	var mensaje models.Tweet
 	var r models.RespApi
 	r.Status = 400
+	IDUsuario := claim.ID.Hex()
 
 	body := ctx.Value(models.Key("body")).(string)
 	err := json.Unmarshal([]byte(body), &mensaje)

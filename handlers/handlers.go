@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/ptilotta/twittor/jwt"
 	"github.com/ptilotta/twittor/models"
 	"github.com/ptilotta/twittor/routers"
 )
@@ -31,7 +32,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 		case "login": // listo
 			return routers.Login(ctx)
 		case "tweet": // listo
-			return routers.GraboTweet(ctx)
+			return routers.GraboTweet(ctx, claim)
 		case "altaRelacion": // listo
 			return routers.AltaRelacion(ctx, request, claim)
 		case "subirAvatar": // listo
@@ -51,9 +52,9 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 			return routers.ListaUsuarios(request, claim)
 		case "leoTweetsSeguidores": // listo
 			return routers.LeoTweetsSeguidores(request, claim)
-		case "obtenerAvatar":
+		case "obtenerAvatar": // listo
 			return routers.ObtenerImagen(ctx, "A", request, claim)
-		case "obtenerBanner":
+		case "obtenerBanner": // listo
 			return routers.ObtenerImagen(ctx, "B", request, claim)
 		}
 	case "PUT":
@@ -87,7 +88,7 @@ func validoAuthorization(ctx context.Context, request events.APIGatewayProxyRequ
 		return false, 401, "Token requerido", models.Claim{}
 	}
 
-	claim, todoOK, msg, err := routers.ProcesoToken(token, ctx.Value(models.Key("jwtSign")).(string))
+	claim, todoOK, msg, err := jwt.ProcesoToken(token, ctx.Value(models.Key("jwtSign")).(string))
 	if !todoOK {
 		if err != nil {
 			fmt.Println("Error en el token " + err.Error())
