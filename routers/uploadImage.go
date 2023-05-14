@@ -68,13 +68,13 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 
 	fmt.Println("paso 1")
 	fmt.Println(request.Headers)
-	mediaType, params, _ := mime.ParseMediaType(request.Headers["Content-Type"])
-	/*	if err != nil {
-			r.Status = 500
-			r.Message = err.Error()
-			return r
-		}
-	*/
+	mediaType, params, err := mime.ParseMediaType(request.Headers["Content-Type"])
+	if err != nil {
+		r.Status = 500
+		r.Message = err.Error()
+		return r
+	}
+
 	fmt.Println("paso 2")
 	if strings.HasPrefix(mediaType, "multipart/") {
 		body, err := base64.StdEncoding.DecodeString(request.Body)
