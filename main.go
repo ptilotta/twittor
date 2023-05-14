@@ -43,7 +43,7 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayV2HTTPRequest) 
 		return res, nil
 	}
 
-	fmt.Println(request.Headers)
+	fmt.Println(request.RequestContext)
 	path := strings.Replace(request.RawPath, os.Getenv("UrlPrefix"), "", -1)
 
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("path"), path)
