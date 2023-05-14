@@ -43,7 +43,6 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 		return res, nil
 	}
 
-	fmt.Println(request.Path)
 	path := strings.Replace(request.PathParameters["twitter"], os.Getenv("UrlPrefix"), "", -1)
 
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("path"), path)
@@ -72,7 +71,6 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 			Body:       string(respAPI.Message),
 			Headers:    headersResp,
 		}
-		fmt.Println(res)
 		return res, nil
 	} else {
 		return respAPI.CustomResp, nil
